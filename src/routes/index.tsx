@@ -99,7 +99,8 @@ function Hero({ onRezervasyon }: { onRezervasyon: () => void }) {
         height={1080}
         className="absolute inset-0 h-full w-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/85 via-background/55 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/70 via-background/20 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background/85 via-background/30 to-transparent" />
 
       <div className="relative mx-auto flex min-h-[92vh] max-w-7xl flex-col justify-center px-5 pt-32 pb-20 lg:px-10">
         <motion.p
