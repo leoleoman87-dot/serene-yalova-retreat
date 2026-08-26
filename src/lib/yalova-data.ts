@@ -8,6 +8,7 @@ export interface OdaTipi {
   kapasiteMetni: string;
   aciklama: string;
   gorsel: string;
+  galeri: { src: string; alt: string }[];
   ozellikler: string[];
   fiyatlar: Partial<Record<Pansiyon, number>>;
 }
@@ -27,6 +28,12 @@ export const odalar: OdaTipi[] = [
     kapasiteMetni: "1 Kişi",
     aciklama: "Arka cepheye bakan, sakin ve dinlendirici tek kişilik oda.",
     gorsel: "/images/oda.jpg",
+    galeri: [
+      { src: "/images/oda.jpg", alt: "Arka SNG odanın genel görünümü" },
+      { src: "/images/oda-detay.jpg", alt: "Yatak ve keten nevresim detayı" },
+      { src: "/images/oda-banyo.jpg", alt: "Oda banyosu" },
+      { src: "/images/kaplica.jpg", alt: "Kapalı termal havuz" },
+    ],
     ozellikler: ["Tek kişilik", "Termal su bağlantısı", "Ücretsiz Wi-Fi", "Kaplıca girişi dahil"],
     fiyatlar: { BB: 6500, HB: 7500, HB_KAMPANYA: 6000 },
   },
@@ -38,6 +45,12 @@ export const odalar: OdaTipi[] = [
     kapasiteMetni: "2 Kişi",
     aciklama: "Çiftler için ferah, arka cephe konumlu çift kişilik oda.",
     gorsel: "/images/oda.jpg",
+    galeri: [
+      { src: "/images/oda.jpg", alt: "Arka DBL odanın genel görünümü" },
+      { src: "/images/oda-detay.jpg", alt: "Yatak detayı" },
+      { src: "/images/oda-banyo.jpg", alt: "Oda banyosu" },
+      { src: "/images/hamam.jpg", alt: "Otel hamamı" },
+    ],
     ozellikler: ["Çift kişilik yatak", "Termal su bağlantısı", "Minibar", "Kaplıca girişi dahil"],
     fiyatlar: { BB: 8000, HB: 10000, HB_KAMPANYA: 8000 },
   },
@@ -49,6 +62,12 @@ export const odalar: OdaTipi[] = [
     kapasiteMetni: "1 Kişi",
     aciklama: "Ön cephe manzaralı, gün ışığı alan tek kişilik oda.",
     gorsel: "/images/oda.jpg",
+    galeri: [
+      { src: "/images/oda.jpg", alt: "Ön SNG odanın genel görünümü" },
+      { src: "/images/oda-detay.jpg", alt: "Yatak detayı" },
+      { src: "/images/hero.jpg", alt: "Ön cepheden termal havuz manzarası" },
+      { src: "/images/oda-banyo.jpg", alt: "Oda banyosu" },
+    ],
     ozellikler: ["Manzaralı ön cephe", "Tek kişilik", "Çalışma alanı", "Kaplıca girişi dahil"],
     fiyatlar: { BB: 7500, HB: 8500, HB_KAMPANYA: 6800 },
   },
@@ -60,6 +79,12 @@ export const odalar: OdaTipi[] = [
     kapasiteMetni: "2 Kişi",
     aciklama: "Ön cephe manzarasına açılan geniş çift kişilik oda.",
     gorsel: "/images/oda.jpg",
+    galeri: [
+      { src: "/images/oda.jpg", alt: "Ön DBL odanın genel görünümü" },
+      { src: "/images/hero.jpg", alt: "Ön cephe manzarası" },
+      { src: "/images/oda-banyo.jpg", alt: "Oda banyosu" },
+      { src: "/images/oda-detay.jpg", alt: "Yatak detayı" },
+    ],
     ozellikler: ["Manzaralı balkon", "Çift kişilik yatak", "Minibar", "Kaplıca girişi dahil"],
     fiyatlar: { BB: 10000, HB: 12000, HB_KAMPANYA: 9600 },
   },
@@ -70,7 +95,13 @@ export const odalar: OdaTipi[] = [
     kapasite: 2,
     kapasiteMetni: "2 Kişi",
     aciklama: "Oturma bölümü ve özel termal küvetiyle en konforlu seçenek.",
-    gorsel: "/images/oda.jpg",
+    gorsel: "/images/oda-suit.jpg",
+    galeri: [
+      { src: "/images/oda-suit.jpg", alt: "Süit oturma bölümü ve termal küvet" },
+      { src: "/images/oda.jpg", alt: "Süit yatak odası" },
+      { src: "/images/oda-banyo.jpg", alt: "Süit banyosu" },
+      { src: "/images/hamam.jpg", alt: "Hamam seansı alanı" },
+    ],
     ozellikler: ["Ayrı oturma odası", "Özel termal küvet", "Yastık menüsü", "Hamam seansı dahil"],
     fiyatlar: { BB: 11500, HB: 13500, HB_KAMPANYA: 10800 },
   },
@@ -81,7 +112,12 @@ export const odalar: OdaTipi[] = [
     kapasite: 1,
     kapasiteMetni: "İlave Kişi",
     aciklama: "Mevcut rezervasyona eklenebilen ilave yatak seçeneği.",
-    gorsel: "/images/oda.jpg",
+    gorsel: "/images/oda-detay.jpg",
+    galeri: [
+      { src: "/images/oda-detay.jpg", alt: "İlave yatak detayı" },
+      { src: "/images/oda.jpg", alt: "Oda genel görünümü" },
+      { src: "/images/oda-banyo.jpg", alt: "Oda banyosu" },
+    ],
     ozellikler: ["Mevcut odaya ilave", "Kahvaltı dahil", "Kaplıca girişi dahil"],
     fiyatlar: { BB: 3500, HB: 4500, HB_KAMPANYA: 3600 },
   },
@@ -92,7 +128,13 @@ export const odalar: OdaTipi[] = [
     kapasite: 5,
     kapasiteMetni: "5 Kişi",
     aciklama: "Mutfaklı, geniş aileler için tasarlanmış müstakil apart.",
-    gorsel: "/images/oda.jpg",
+    gorsel: "/images/oda-apart.jpg",
+    galeri: [
+      { src: "/images/oda-apart.jpg", alt: "Apart oturma ve mutfak alanı" },
+      { src: "/images/oda.jpg", alt: "Apart yatak odası" },
+      { src: "/images/oda-detay.jpg", alt: "Yatak detayı" },
+      { src: "/images/oda-banyo.jpg", alt: "Apart banyosu" },
+    ],
     ozellikler: ["Tam donanımlı mutfak", "2 yatak odası", "Özel teras", "Aile dostu"],
     fiyatlar: { BB: 12000, HB: 17000 },
   },
