@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/site/Navbar";
 import { SafeImage } from "@/components/site/SafeImage";
+import { OdaGaleri } from "@/components/site/OdaGaleri";
 import { ReservationModal } from "@/components/site/ReservationModal";
 import { PaymentScreen } from "@/components/site/PaymentScreen";
 import { odalar, PANSIYON_ETIKET, tl, type OdaTipi, type Pansiyon } from "@/lib/yalova-data";
