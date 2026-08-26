@@ -42,7 +42,7 @@ function Icerik({
     return d.toISOString().slice(0, 10);
   });
   const [misafir, setMisafir] = useState(Math.max(1, secili.kapasite));
-  const [pansiyon, setPansiyon] = useState<Pansiyon>(pansiyonlar[0]);
+  const [pansiyon, setPansiyon] = useState<Pansiyon>(pansiyonlar[0]!);
 
   const gece = geceSayisi(giris, cikis);
   const geceUcreti = secili.fiyatlar[pansiyon] ?? 0;
@@ -54,7 +54,7 @@ function Icerik({
     setOdaId(id);
     setMisafir(Math.max(1, yeni.kapasite));
     const yeniPansiyonlar = Object.keys(yeni.fiyatlar) as Pansiyon[];
-    if (!yeniPansiyonlar.includes(pansiyon)) setPansiyon(yeniPansiyonlar[0]);
+    if (!yeniPansiyonlar.includes(pansiyon)) setPansiyon(yeniPansiyonlar[0]!);
   };
 
   return (

@@ -66,7 +66,7 @@ function Index() {
     <div className="bg-background">
       <Navbar />
 
-      <Hero onRezervasyon={() => setSeciliOda(odalar[3])} />
+      <Hero onRezervasyon={() => setSeciliOda(odalar[3]!)} />
       <Kaplicalar />
       <Odalar onSec={setSeciliOda} />
       <Hamamlar />
