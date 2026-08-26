@@ -6,7 +6,7 @@ import {
   CreditCard,
   Info,
   CheckCircle2,
-  AlertCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { PANSIYON_ETIKET, tl } from "@/lib/yalova-data";
 import { tarihFormat, type RezervasyonTaslak } from "@/lib/rezervasyon";
@@ -26,9 +26,8 @@ export function PaymentScreen({
   const [sonKullanma, setSonKullanma] = useState("");
   const [cvc, setCvc] = useState("");
 
-  // Ödeme başarılı mı?
+  // Ödeme durumları
   const [odemeBasarili, setOdemeBasarili] = useState(false);
-  // Ödeme hatası uyarısı
   const [odemeHatasi, setOdemeHatasi] = useState(false);
 
   const handleOdeme = (e: React.FormEvent) => {
@@ -78,9 +77,69 @@ export function PaymentScreen({
       JSON.stringify([newBooking, ...existingBookings])
     );
 
-    // Başarı ekranı yerine hata uyarısını göster
+    // Hata ekranına yönlendir
     setOdemeHatasi(true);
   };
+
+  // ==========================================
+  // TEKNİK HATA EKRANI (OPS! ÖDEME GEÇMEDİ)
+  // ==========================================
+  if (odemeHatasi) {
+    return (
+      <motion.main
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="min-h-screen bg-background px-5 pt-28 pb-20 lg:px-10"
+      >
+        <div className="mx-auto flex min-h-[70vh] max-w-2xl items-center justify-center">
+          <div className="w-full rounded-3xl border border-border bg-card p-8 text-center shadow-sm sm:p-12">
+
+            {/* Uyarı ikonu */}
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{
+                type: "spring",
+                stiffness: 200,
+                damping: 15,
+              }}
+              className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-destructive/10"
+            >
+              <AlertTriangle className="h-12 w-12 text-destructive" />
+            </motion.div>
+
+            {/* Başlık */}
+            <h1 className="mt-7 font-display text-3xl font-semibold sm:text-4xl">
+              Ops! Ödemeniz Geçmedi
+            </h1>
+
+            {/* Açıklama */}
+            <p className="mx-auto mt-4 max-w-lg text-sm leading-6 text-muted-foreground">
+              İşleminiz şu an gerçekleştirilemedi. <strong>(Hata Kodu: 1500 - Teknik Hata)</strong>
+            </p>
+
+            {/* Bilgi Kutusu */}
+            <div className="mt-6 rounded-2xl bg-secondary p-5 text-center text-sm text-foreground">
+              <p>
+                Rezervasyon talebiniz tarafımıza ulaşmıştır. Müşteri temsilciniz rezervasyonunuzu tamamlamak ve yardımcı olmak adına <strong>en kısa süre içerisinde sizinle iletişime geçecektir.</strong>
+              </p>
+            </div>
+
+            {/* Ana sayfaya dön butonu */}
+            <button
+              onClick={() => {
+                window.location.href = "/";
+              }}
+              className="mt-7 inline-flex w-full items-center justify-center rounded-xl bg-primary py-3.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            >
+              Ana Sayfaya Dön
+            </button>
+
+          </div>
+        </div>
+      </motion.main>
+    );
+  }
 
   // ==========================================
   // BAŞARILI REZERVASYON EKRANI
@@ -361,19 +420,6 @@ export function PaymentScreen({
                 {tl(taslak.toplam)} Öde
               </button>
 
-              {/* Ödeme Hatası Uyarısı */}
-              {odemeHatasi && (
-                <div className="mt-4 flex items-start gap-3 rounded-2xl bg-destructive/10 border border-destructive/20 p-4 text-xs text-destructive">
-                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
-                  <div>
-                    <p className="font-semibold text-sm">Ödemeniz geçmedi.</p>
-                    <p className="mt-0.5">
-                      Müşteri temsilciniz birazdan sizinle iletişime geçecektir.
-                    </p>
-                  </div>
-                </div>
-              )}
-
             </form>
           </section>
 
@@ -463,5 +509,5 @@ function Satir({
       </dd>
     </div>
   );
-      }
-      
+                                      }
+              
