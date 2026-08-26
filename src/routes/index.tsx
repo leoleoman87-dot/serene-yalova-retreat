@@ -254,13 +254,7 @@ function Odalar({ onSec }: { onSec: (o: OdaTipi) => void }) {
               transition={{ duration: 0.5, delay: (i % 3) * 0.08 }}
               className="flex flex-col overflow-hidden rounded-3xl border border-border bg-card"
             >
-              <SafeImage
-                src={oda.gorsel}
-                alt={`${oda.ad} görseli`}
-                width={1280}
-                height={960}
-                className="h-48 w-full object-cover"
-              />
+              <OdaGaleri baslik={oda.ad} gorseller={oda.galeri} />
               <div className="flex flex-1 flex-col p-6">
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-[10px] tracking-[0.25em] text-primary uppercase">
