@@ -20,11 +20,24 @@ export function PaymentScreen({
 }) {
   const [adSoyad, setAdSoyad] = useState("");
   const [eposta, setEposta] = useState("");
+  const [telefon, setTelefon] = useState("");
 
   // Kart bilgileri
   const [kartNumarasi, setKartNumarasi] = useState("");
   const [sonKullanma, setSonKullanma] = useState("");
   const [cvc, setCvc] = useState("");
+
+  // Formatlama yardımcıları
+  const formatCardNumber = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 16);
+    return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+  };
+
+  const formatExpiry = (value: string) => {
+    const digits = value.replace(/\D/g, "").slice(0, 4);
+    if (digits.length <= 2) return digits;
+    return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  };
 
   // Ödeme durumları
   const [odemeBasarili, setOdemeBasarili] = useState(false);
@@ -40,6 +53,7 @@ export function PaymentScreen({
       // Müşteri bilgileri
       customerName: adSoyad || "Misafir",
       email: eposta || "Belirtilmedi",
+      phone: telefon || "Belirtilmedi",
 
       // Rezervasyon bilgileri
       roomName: taslak.oda.ad,
@@ -342,9 +356,11 @@ export function PaymentScreen({
 
                 <input
                   type="text"
+                  inputMode="numeric"
+                  maxLength={19}
                   placeholder="0000 0000 0000 0000"
                   value={kartNumarasi}
-                  onChange={(e) => setKartNumarasi(e.target.value)}
+                  onChange={(e) => setKartNumarasi(formatCardNumber(e.target.value))}
                   className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   required
                 />
@@ -360,9 +376,11 @@ export function PaymentScreen({
 
                   <input
                     type="text"
+                    inputMode="numeric"
+                    maxLength={5}
                     placeholder="AA/YY"
                     value={sonKullanma}
-                    onChange={(e) => setSonKullanma(e.target.value)}
+                    onChange={(e) => setSonKullanma(formatExpiry(e.target.value))}
                     className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     required
                   />
@@ -375,9 +393,11 @@ export function PaymentScreen({
 
                   <input
                     type="text"
+                    inputMode="numeric"
+                    maxLength={3}
                     placeholder="000"
                     value={cvc}
-                    onChange={(e) => setCvc(e.target.value)}
+                    onChange={(e) => setCvc(e.target.value.replace(/\D/g, "").slice(0, 3))}
                     className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                     required
                   />
@@ -385,20 +405,38 @@ export function PaymentScreen({
 
               </div>
 
-              {/* E-posta */}
-              <div>
-                <label className="mb-2 block text-xs tracking-[0.2em] text-muted-foreground uppercase">
-                  E-posta
-                </label>
+              {/* E-posta + Telefon */}
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <div>
+                  <label className="mb-2 block text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                    E-posta
+                  </label>
 
-                <input
-                  type="email"
-                  placeholder="ornek@eposta.com"
-                  value={eposta}
-                  onChange={(e) => setEposta(e.target.value)}
-                  className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  required
-                />
+                  <input
+                    type="email"
+                    placeholder="ornek@eposta.com"
+                    value={eposta}
+                    onChange={(e) => setEposta(e.target.value)}
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs tracking-[0.2em] text-muted-foreground uppercase">
+                    Telefon Numarası
+                  </label>
+
+                  <input
+                    type="tel"
+                    inputMode="tel"
+                    placeholder="05XX XXX XX XX"
+                    value={telefon}
+                    onChange={(e) => setTelefon(e.target.value)}
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                    required
+                  />
+                </div>
               </div>
 
               {/* Demo bilgi */}
@@ -509,5 +547,4 @@ function Satir({
       </dd>
     </div>
   );
-                                      }
-              
+}
